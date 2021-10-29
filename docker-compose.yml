@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  service:
+    image: ${DOCKER_REGISTRY-}service
+    build:
+      context: .
+      dockerfile: src/Service/Dockerfile
+    container_name: healthyro-product-service
+    restart: always
+    ports:
+        - "5015:80"
+    depends_on:
+        - healthyro-product-db
+    networks:
+        - localdev
+
+  healthyro-product-db:
+    image: postgres
+    container_name: healthyro-product-db
+    restart: always
+    ports:
+        - "5435:5432"
+    environment:
+        POSTGRES_PASSWORD: healthyro@
+        POSTGRES_USER: healthyro@dmin
+        POSTGRES_DB: HealthyroProductDb
+    volumes:
+        - ./var/lib/postgresql/data
+    networks:
+        - localdev
+
+networks:
+    localdev:
+        name: localdev
